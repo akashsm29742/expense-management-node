@@ -14,7 +14,7 @@ export async function createCategoryHandler(req: Request, res: Response) {
 }
 
 export async function listCategoriesHandler(req: Request, res: Response) {
-  console.log(req.user);
+  if (!req.user) return new HttpError("Unauthorized", 401);
   const onlyActive = req.user.role !== "ADMIN" ? true : false;
   const categories = await listCategories(onlyActive);
   res.json({ success: true, data: categories });

@@ -7,15 +7,7 @@ import { PERMISSIONS } from "../../auth/permissions";
 
 const router = Router();
 
-router.get(
-  "/expenses",
-  requireAuth,
-  requirePermission(
-    PERMISSIONS.VIEW_TEAM_EXPENSES,
-    PERMISSIONS.VIEW_ALL_EXPENSES
-  ),
-  listExpensesReport
-);
+router.get("/expenses", requireAuth, listExpensesReport);
 
 router.get(
   "/expenses/export",

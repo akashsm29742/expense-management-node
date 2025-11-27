@@ -47,7 +47,7 @@ export async function createUserAsAdmin(input: {
 
 export async function listAllUsers() {
   return User.find()
-    .populate("role", "name")
+    .populate("role", "name permissions")
     .populate("manager", "name email")
     .sort({ createdAt: -1 });
 }

@@ -1,6 +1,6 @@
 // src/modules/reports/report.controller.ts
 import { Request, Response } from "express";
-import { getExpensesForRole } from "./report.service";
+import { getExpensesForUser } from "./report.service";
 import { HttpError } from "../../utils/http-error";
 import { IExpense } from "../expenses/expense.model";
 
@@ -8,7 +8,7 @@ export async function listExpensesReport(req: Request, res: Response) {
   try {
     const user = req.user!; // injected by auth middleware
 
-    const expenses = await getExpensesForRole(user.id, user.role);
+    const expenses = await getExpensesForUser(user.id, user.permissions || []);
 
     res.json({
       success: true,
@@ -54,7 +54,7 @@ function toCsv(expenses: IExpense[]): string {
 export async function exportExpensesReport(req: Request, res: Response) {
   console.log("Generating CSV report");
   const user = req.user!;
-  const expenses = await getExpensesForRole(user.id, user.role);
+  const expenses = await getExpensesForUser(user.id, user.permissions || []);
   console.log("Exporting expenses:", expenses.length);
   const csv = toCsv(expenses as any);
 

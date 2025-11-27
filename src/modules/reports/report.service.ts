@@ -26,6 +26,7 @@ export async function getExpensesForUser(
 ) {
   // 1) Highest level: can view ALL expenses
   if (permissions.includes(PERMISSIONS.VIEW_ALL_EXPENSES)) {
+    // ALL expenses include the user's own, so nothing to add
     return findExpense({});
   }
 
@@ -33,10 +34,11 @@ export async function getExpensesForUser(
   if (permissions.includes(PERMISSIONS.VIEW_TEAM_EXPENSES)) {
     const employees = await User.find({ manager: userId }, "_id");
     const employeeIds = employees.map((e) => e._id);
-    return findExpense({ employee: { $in: employeeIds } });
+    const finalIds = [...employeeIds, userId]; // Including the current user's expenses
+    return findExpense({ employee: { $in: finalIds } });
   }
 
-  // 3) Default: only own expenses (normal employee)
+  // 3) Default: only own expenses
   return findExpense({ employee: userId });
 }
 

@@ -33,7 +33,6 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
 
   try {
     const payload = jwt.verify(token, env.jwtSecret) as JwtPayload;
-    console.log("Authenticated user:", payload);
     req.user = {
       id: payload.id,
       role: payload.role,

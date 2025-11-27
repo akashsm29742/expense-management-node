@@ -18,11 +18,17 @@ export async function createExpense(req: Request, res: Response) {
 }
 
 export async function approveExpenseHandler(req: Request, res: Response) {
-  const exp = await approveExpense(req.params.id);
+  if (!req.user) {
+    return new HttpError("Unauthorized", 401);
+  }
+  const exp = await approveExpense(req.params.id, req.user?.id);
   res.json(exp);
 }
 
 export async function rejectExpenseHandler(req: Request, res: Response) {
-  const exp = await rejectExpense(req.params.id);
+  if (!req.user) {
+    return new HttpError("Unauthorized", 401);
+  }
+  const exp = await rejectExpense(req.params.id, req.user?.id);
   res.json(exp);
 }

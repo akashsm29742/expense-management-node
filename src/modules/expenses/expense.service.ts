@@ -36,9 +36,19 @@ export async function submitExpense(input: {
   return expense;
 }
 
-export async function approveExpense(id: string): Promise<IExpense | null> {
+export async function approveExpense(
+  expenseId: string,
+  loggedInUserId: string
+): Promise<IExpense | null> {
+  const expenseDoc = await Expense.findById(expenseId);
+  if (!expenseDoc) {
+    throw new HttpError(`Expense does not exist`, 400);
+  }
+  if (expenseDoc.employee.toString() === loggedInUserId) {
+    throw new HttpError("Unauthorized to approve you own request", 401);
+  }
   const exp = await Expense.findByIdAndUpdate(
-    id,
+    expenseId,
     { status: "APPROVED" },
     { new: true }
   );
@@ -46,12 +56,22 @@ export async function approveExpense(id: string): Promise<IExpense | null> {
   return exp;
 }
 
-export async function rejectExpense(id: string): Promise<IExpense | null> {
+export async function rejectExpense(
+  expenseId: string,
+  loggedInUserId: string
+): Promise<IExpense | null> {
+  const expenseDoc = await Expense.findById(expenseId);
+  if (!expenseDoc) {
+    throw new HttpError(`Expense does not exist`, 400);
+  }
+  if (expenseDoc.employee.toString() === loggedInUserId) {
+    throw new HttpError("Unauthorized to reject you own request", 401);
+  }
   const exp = await Expense.findByIdAndUpdate(
-    id,
-    { status: "REJECTED" },
+    expenseId,
+    { status: "APPROVED" },
     { new: true }
   );
-  eventBus.emit(EVENTS.EXPENSE_REJECTED, exp);
+  eventBus.emit(EVENTS.EXPENSE_APPROVED, exp);
   return exp;
 }

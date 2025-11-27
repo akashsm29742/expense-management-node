@@ -154,8 +154,6 @@ async function seed() {
       currency: "INR",
       description: "Cab to client office",
       status: "PENDING",
-      createdAt: new Date(),
-      updatedAt: new Date(),
     },
     {
       employee: employee._id,
@@ -164,8 +162,7 @@ async function seed() {
       currency: "INR",
       description: "Team lunch",
       status: "APPROVED",
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      statusChangedBy: manager._id,
     },
     {
       employee: employee._id,
@@ -174,8 +171,7 @@ async function seed() {
       currency: "INR",
       description: "Office chair repair",
       status: "REJECTED",
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      statusChangedBy: manager._id,
     },
   ]);
 

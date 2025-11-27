@@ -9,6 +9,7 @@ export interface IExpense extends Document {
   status: "PENDING" | "APPROVED" | "REJECTED";
   createdAt: Date;
   updatedAt: Date;
+  statusChangedBy?: Types.ObjectId;
 }
 
 const expenseSchema = new Schema<IExpense>(
@@ -22,6 +23,10 @@ const expenseSchema = new Schema<IExpense>(
       type: String,
       enum: ["PENDING", "APPROVED", "REJECTED"],
       default: "PENDING",
+    },
+    statusChangedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
   },
   { timestamps: true }

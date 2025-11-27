@@ -49,7 +49,7 @@ export async function approveExpense(
   }
   const exp = await Expense.findByIdAndUpdate(
     expenseId,
-    { status: "APPROVED" },
+    { status: "APPROVED", statusChangedBy: loggedInUserId },
     { new: true }
   );
   eventBus.emit(EVENTS.EXPENSE_APPROVED, exp);

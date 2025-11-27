@@ -1,7 +1,11 @@
 import { Router } from "express";
 import { requireAuth } from "../../middleware/auth";
 // import { requireRole } from "../../middleware/rbac";
-import { createExpense, approveExpenseHandler } from "./expense.controller";
+import {
+  createExpense,
+  approveExpenseHandler,
+  rejectExpenseHandler,
+} from "./expense.controller";
 import { requirePermission } from "../../middleware/permission";
 import { PERMISSIONS } from "../../auth/permissions";
 
@@ -20,6 +24,13 @@ router.post(
   // requireRole("MANAGER"), !!! THIS IS OVERRIDING THE PERMISSION FEATURE GIVEN IN UI FOR CHANGING PERMISSIONS (Comment this line if you want to use that feature)
   requirePermission(PERMISSIONS.APPROVE_EXPENSE), // Comment this and uncomment the above line if you want to restrict to MANAGER role only
   approveExpenseHandler
+);
+router.post(
+  "/:id/reject",
+  requireAuth,
+  // requireRole("MANAGER"), !!! THIS IS OVERRIDING THE PERMISSION FEATURE GIVEN IN UI FOR CHANGING PERMISSIONS (Comment this line if you want to use that feature)
+  requirePermission(PERMISSIONS.APPROVE_EXPENSE), // Comment this and uncomment the above line if you want to restrict to MANAGER role only
+  rejectExpenseHandler
 );
 
 export default router;

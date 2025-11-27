@@ -1,7 +1,15 @@
-import { submitExpense, approveExpense } from "./expense.service";
+import { HttpError } from "../../utils/http-error";
+import {
+  submitExpense,
+  approveExpense,
+  rejectExpense,
+} from "./expense.service";
 import { Request, Response } from "express";
 
 export async function createExpense(req: Request, res: Response) {
+  if (!req.user) {
+    return new HttpError("Unauthorized", 401);
+  }
   const exp = await submitExpense({
     employee: req.user.id,
     ...req.body,
@@ -11,5 +19,10 @@ export async function createExpense(req: Request, res: Response) {
 
 export async function approveExpenseHandler(req: Request, res: Response) {
   const exp = await approveExpense(req.params.id);
+  res.json(exp);
+}
+
+export async function rejectExpenseHandler(req: Request, res: Response) {
+  const exp = await rejectExpense(req.params.id);
   res.json(exp);
 }

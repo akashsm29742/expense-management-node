@@ -5,7 +5,7 @@ import { Category } from "../categories/category.model";
 import { HttpError } from "../../utils/http-error";
 
 export async function submitExpense(input: {
-  employeeId: string;
+  employee: string;
   category: string;
   amount: number;
   currency?: string;
@@ -24,7 +24,7 @@ export async function submitExpense(input: {
   }
 
   const expense = await Expense.create({
-    employee: input.employeeId,
+    employee: input.employee,
     category: categoryDoc.name,
     amount: input.amount,
     currency: input.currency || "INR",
@@ -43,5 +43,15 @@ export async function approveExpense(id: string): Promise<IExpense | null> {
     { new: true }
   );
   eventBus.emit(EVENTS.EXPENSE_APPROVED, exp);
+  return exp;
+}
+
+export async function rejectExpense(id: string): Promise<IExpense | null> {
+  const exp = await Expense.findByIdAndUpdate(
+    id,
+    { status: "REJECTED" },
+    { new: true }
+  );
+  eventBus.emit(EVENTS.EXPENSE_REJECTED, exp);
   return exp;
 }
